@@ -1,0 +1,1325 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Музыкальные карточки</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+body {
+    background: #f8f0f5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* ← ИЗМЕНИТЬ с center на flex-start */
+    padding: 40px 20px; /* ← УВЕЛИЧИТЬ верхний отступ */
+}
+
+.container {
+    background: white;
+    border-radius: 20px;
+    padding: 60px 30px 30px; /* ← ВЕРХНИЙ ОТСТУП 60px для кнопки */
+    box-shadow: 0 10px 30px rgba(200, 150, 200, 0.3);
+    max-width: 1000px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    margin-top: 0; /* ← УБРАТЬ margin-top если есть */
+}
+
+h1 {
+    color: #c97aa0;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    margin-top: 0; /* ← ОБНУЛИТЬ отступ сверху */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.back-link {
+    position: absolute;
+    top: 25px; /* ← ОТРЕГУЛИРОВАТЬ положение кнопки */
+    left: 30px;
+    color: #c97aa0;
+    text-decoration: none;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    z-index: 10;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+h1 {
+    color: #c97aa0;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    margin-top: 60px; /* ← ОТСТУП СВЕРХУ для кнопки */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            width: 150px;
+            height: 150px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        .card-front {
+            color: #333;
+        }
+
+        .card-front .title {
+            font-size: 1em;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .card-back {
+            background: white;
+            transform: rotateY(180deg);
+            border: 3px solid #c97aa0;
+            color: #333;
+            text-align: center;
+        }
+
+        .card-back .desc {
+            font-size: 1em;
+            line-height: 1.4;
+            max-height: 100%;
+            overflow-y: hidden;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+            object-fit: contain;
+        }
+
+        .spin-btn {
+            padding: 15px 50px;
+            font-size: 1.5em;
+            background: #c97aa0;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+
+        .spin-btn:hover:not(:disabled) {
+            background: #b5659e;
+            transform: scale(1.05);
+        }
+
+        .spin-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result {
+            background: #f0d6e8;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            object-fit: contain;
+        }
+
+        .result-title {
+            font-size: 1.8em;
+            color: #b5659e;
+            margin-bottom: 10px;
+        }
+
+        .result-desc {
+            font-size: 1.3em;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .audio-player {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 15px;
+            border-radius: 10px;
+            background: #f8f0f5;
+        }
+
+        audio::-webkit-media-controls-panel {
+            background: #f0d6e8;
+        }
+
+        .music-info {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+            text-align: center;
+            min-height: 40px;
+        }
+
+        .reveal-btn {
+            padding: 8px 20px;
+            background: #c97aa0;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .reveal-btn:hover {
+            background: #b5659e;
+            transform: scale(1.05);
+        }
+
+        /* Специальная кнопка для видео Дирижёра и Крылатого шага */
+        .video-instruction-btn {
+            padding: 10px 25px;
+            background: #fc2847;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .video-instruction-btn.bird-btn {
+            background: #1E90FF;
+        }
+
+        .video-instruction-btn:hover {
+            background: #d9223f;
+            transform: scale(1.05);
+        }
+
+        .video-instruction-btn.bird-btn:hover {
+            background: #187bcd;
+        }
+
+        .instructions {
+            color: #888;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        /* Цвета карточек (передняя сторона) */
+        .card[data-index="0"] .card-front { background-color: #7feb4d; }
+        .card[data-index="1"] .card-front { background-color: #da70d6; }
+        .card[data-index="2"] .card-front { background-color: #7fffd4; }
+        .card[data-index="3"] .card-front { background-color: #ffbc75; }
+        .card[data-index="4"] .card-front { background-color: #ff9494; }
+        .card[data-index="5"] .card-front { background-color: #c2c2c2; }
+        .card[data-index="6"] .card-front { background-color: #fbec5d; }
+        .card[data-index="7"] .card-front { background-color: #e9967a; }
+        .card[data-index="8"] .card-front { background-color: #87CEEB; }
+
+        /* Адаптивность для мобильных */
+        @media (max-width: 768px) {
+            .card {
+                width: 130px;
+                height: 130px;
+            }
+            
+            .card-icon {
+                width: 50px;
+                height: 50px;
+            }
+            
+            h1 {
+                font-size: 2em;
+                margin-top: 30px;
+            }
+            
+            .back-link {
+                top: 20px;
+                left: 20px;
+            }
+        }
+
+        /* ==================== */
+        /* СТИЛИ ДЛЯ ВИДЕО-ОКОН */
+        /* ==================== */
+        
+        .video-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .video-modal-content {
+            position: relative;
+            max-width: 800px;
+            width: 90%;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-header {
+            background: linear-gradient(135deg, #fc2847, #ff6b9d);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .video-header.bird-header {
+            background: linear-gradient(135deg, #87CEEB, #1E90FF);
+        }
+
+        .video-instructions {
+            background: #fff9e6;
+            padding: 15px;
+            border-bottom: 2px dashed #9da9e3;
+            text-align: center;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .video-container {
+            position: relative;
+            background: black;
+        }
+
+        .sheep-video, .bird-video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .video-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .video-btn {
+            background: #fc2847;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            min-width: 150px;
+            justify-content: center;
+        }
+
+        .video-btn.bird-btn {
+            background: #1E90FF;
+        }
+
+        .video-btn:hover {
+            background: #d9223f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(252, 40, 71, 0.3);
+        }
+
+        .video-btn.bird-btn:hover {
+            background: #187bcd;
+        }
+
+        .video-btn:active {
+            transform: translateY(0);
+        }
+
+        .video-btn.secondary {
+            background: #666;
+        }
+
+        .video-btn.secondary:hover {
+            background: #555;
+        }
+
+        .close-video {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.7);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            transition: background 0.3s;
+        }
+
+        .close-video:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .video-overlay h3 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #9da9e3;
+        }
+
+        .video-overlay p {
+            font-size: 1.2em;
+            max-width: 600px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .start-video-btn {
+            background: #99093e;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .start-video-btn:hover {
+            background: #99093e;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .video-status {
+            text-align: center;
+            padding: 10px;
+            background: #e8f5e9;
+            color: #99093e;
+            font-weight: bold;
+            border-radius: 0 0 15px 15px;
+        }
+
+.header-headphone {
+    width: 60px;
+    height: 60px;
+    vertical-align: middle;
+    margin: 0 15px;
+}
+
+.dance {
+    width: 60px;
+    height: 60px;
+    vertical-align: middle;
+    margin: 0 15px;
+    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+    .header-headphone, .dance {
+        width: 40px;
+        height: 40px;
+        margin: 0 10px;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Назад на главную</a>
+        
+<h1>
+    <img src="images/headphone.png" alt="Наушники" class="header-headphone">
+    Музыкальная лаборатория
+    <img src="images/dance.png" alt="Танцы" class="dance">
+</h1>
+        
+        <button class="spin-btn" id="spinBtn">Случайное задание!</button>
+        
+        <div class="cards-container" id="cardsContainer">
+            <!-- Карточки будут созданы через JS -->
+        </div>
+        
+        <div class="result" id="result">
+            <div class="result-icon" id="resultIcon">
+                <img src="images/laboratory.png" alt="Лаборатория" style="width: 80px; height: 80px;">
+            </div>
+            <div class="result-title" id="resultTitle">Нажми на карточку</div>
+            <div class="result-desc" id="resultDesc">Или выбери случайное задание</div>
+            <div id="audioContainer"></div>
+        </div>
+    </div>
+
+    <!-- ==================== -->
+    <!-- ВИДЕО-ОКНО ДИРИЖЁРА -->
+    <!-- ==================== -->
+    <div id="conductorVideoModal" class="video-modal">
+        <div class="video-modal-content">
+            <span class="close-video" onclick="closeConductorVideo()">&times;</span>
+            
+            <div class="video-header">
+                <h2>Весёлая овечка для хорошего настроения!</h2>
+            </div>
+            
+            <div class="video-instructions">
+                <p><strong>ПРАВИЛА:</strong> Повторяйте движения под ритм музыки за учителем! Левая и правая рука работают отдельно.</p>
+            </div>
+            
+            <div class="video-container">
+                <video id="sheepVideo" class="sheep-video">
+                    <source src="video/sheep.mp4" type="video/mp4">
+                    Ваш браузер не поддерживает видео.
+                </video>
+                
+                <div id="conductorVideoOverlay" class="video-overlay">
+                    <h3>Готовы начать упражнение?</h3>
+                    <button class="start-video-btn" onclick="startConductorVideo()">
+                        ▶️ СТАРТ
+                    </button>
+                    <p style="margin-top: 20px; font-size: 0.9em; color: #ccc;">
+                        Нажмите СТАРТ, когда будете готовы
+                    </p>
+                </div>
+            </div>
+            
+            <div class="video-controls">
+                <button class="video-btn" onclick="restartConductorVideo()">
+                    🔄 Заново
+                </button>
+                <button class="video-btn secondary" onclick="closeConductorVideo()">
+                    ⏹ Стоп
+                </button>
+            </div>
+            
+            <div class="video-status" id="conductorVideoStatus">
+                Ожидание запуска...
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== -->
+    <!-- ВИДЕО-ОКНО КРЫЛАТЫЙ ШАГ -->
+    <!-- ==================== -->
+    <div id="birdVideoModal" class="video-modal">
+        <div class="video-modal-content">
+            <span class="close-video" onclick="closeBirdVideo()">&times;</span>
+            
+            <div class="video-header bird-header">
+                <h2>Крылатый шаг — парный танец!</h2>
+            </div>
+            
+            <div class="video-instructions">
+                <p><strong>ПРАВИЛА:</strong> Разделитесь на пары, положите руки на плечи друг другу и повторяйте движения за учителем!</p>
+            </div>
+            
+            <div class="video-container">
+                <video id="birdVideo" class="bird-video">
+                    <source src="video/bird.mp4" type="video/mp4">
+                    Ваш браузер не поддерживает видео.
+                </video>
+                
+                <div id="birdVideoOverlay" class="video-overlay">
+                    <h3>Готовы танцевать?</h3>
+                    <button class="start-video-btn" onclick="startBirdVideo()">
+                        ▶️ СТАРТ
+                    </button>
+                    <p style="margin-top: 20px; font-size: 0.9em; color: #ccc;">
+                        Нажмите СТАРТ, когда будете готовы в парах
+                    </p>
+                </div>
+            </div>
+            
+            <div class="video-controls">
+                <button class="video-btn bird-btn" onclick="restartBirdVideo()">
+                    🔄 Заново
+                </button>
+                <button class="video-btn secondary" onclick="closeBirdVideo()">
+                    ⏹ Стоп
+                </button>
+            </div>
+            
+            <div class="video-status" id="birdVideoStatus">
+                Ожидание запуска...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== //
+        // ДАННЫЕ ДЛЯ КАРТОЧЕК С АУДИО //
+        // ==================== //
+        const items = [
+            {
+                icon: "images/leaf.png",
+                title: "Листик",
+                desc: "Двигаться ТИХО и ПЛАВНО на носочках",
+                colorFront: "#a8e6cf",
+                colorBack: "#dcedc1",
+                audioFiles: [
+                    { title: "Э. Григ — «Утро»", file: "grig_utro.mp3" },
+                    { title: "П.И. Чайковский — Танец Феи Драже", file: "chaikovsky_fairy_dragee.mp3" },
+                    { title: "А. Лядов — «Музыкальная табакерка»", file: "lyadov_tabakerka.mp3" },
+                    { title: "Н. Паганини — Кампанелла", file: "paganini_la_campanella.mp3" },
+                    { title: "П.И. Чайковский — Танец маленьких лебедей", file: "chaikovsky_swan_lake_swans.mp3" }
+                ]
+            },
+            {
+                icon: "images/drum.png",      
+                title: "Барабан",
+                desc: "Маршировать ГРОМКО и ЧЕТКО, как солдаты",
+                colorFront: "#ffd3b6",
+                colorBack: "#ffaaa5",
+                audioFiles: [
+                    { title: "В. Агапкин — «Прощание славянки»", file: "agapkin_slavyanka.mp3" },
+                    { title: "Ж. Бизе — Марш тореадора", file: "bizet_toreador_march.mp3" },
+                    { title: "И. Штраус — Марш Радецкого", file: "strauss_radetzky_march.mp3" },
+                    { title: "Марш авиаторов («Всё выше»)", file: "march_aviators.mp3" },
+                    { title: "Т. Хренников — Марш артиллеристов", file: "khrennikov_artillery_march.mp3" },
+                    { title: "Народная — «Солдатушки, бравы ребятушки»", file: "soldatushki.mp3" }
+                ]
+            },
+            {
+                icon: "images/wind.png",
+                title: "Ветерок",
+                desc: "КРУЖИТЬСЯ на месте, как осенние листья",
+                colorFront: "#b5ead7",
+                colorBack: "#c7ceea",
+                audioFiles: [
+                    { title: "П.И. Чайковский — Вальс цветов", file: "chaikovsky_waltz_flowers.mp3" },
+                    { title: "Ф. Шопен — Вальс до-диез минор", file: "chopin_waltz_cis_minor.mp3" },
+                    { title: "П.И. Чайковский — Вальс («Спящая красавица»)", file: "chaikovsky_waltz_sleeping_beauty.mp3" },
+                    { title: "И. Брамс — Венгерский танец №5", file: "brahms_hungarian_dance_5.mp3" }
+                ]
+            },
+            {
+                icon: "images/lion.png",
+                title: "Лев",
+                desc: "Ходить ВАЖНО и ГРОЗНО, рычать (мимикой)",
+                colorFront: "#ff8b94",
+                colorBack: "#ffaaa5",
+                audioFiles: [
+                    { title: "К. Сен-Санс — «Королевский марш льва»", file: "saint_saens_lion.mp3" },
+                    { title: "Э. Григ — «В пещере горного короля»", file: "grig_cave_mountain_king.mp3" },
+                    { title: "И.С. Бах — Токката и фуга ре минор", file: "bach_toccata_fugue.mp3" },
+                    { title: "С. Прокофьев — Танец рыцарей", file: "prokofiev_dance_knights.mp3" }
+                ]
+            },
+            {
+                icon: "images/circus.png",
+                title: "Цирк",
+                desc: "Делать СМЕШНЫЕ ГРИМАСЫ и нелепые движения",
+                colorFront: "#dcedc1",
+                colorBack: "#a8e6cf",
+                audioFiles: [
+                    { title: "Д. Кабалевский — «Клоуны»", file: "kabalevsky_clowns.mp3" },
+                    { title: "И.С. Бах — «Шутка»", file: "bach_badinerie.mp3" },
+                    { title: "М. Мусоргский — «Балет невылупившихся птенцов»", file: "musorgsky_chicks.mp3" },
+                    { title: "Г. Гладков — Песня охраны", file: "gladkov_bremen_guard.mp3" },
+                    { title: "А. Хачатурян — Танец с саблями", file: "khachaturian_sabre_dance.mp3" },
+                    { title: "В. Гаврилин — Тарантелла", file: "gavrilin_tarantella.mp3" }
+                ]
+            },
+            {
+                icon: "images/moon.png",
+                title: "Луна",
+                desc: "ЗАМЕРЕТЬ на месте, закрыть глаза и покачиваться сонно",
+                colorFront: "#c7ceea",
+                colorBack: "#b5ead7",
+                audioFiles: [
+                    { title: "Н. Римский-Корсаков — Колыбельная Волховы", file: "rimsky_korsakov_volkhova_lullaby.mp3" },
+                    { title: "К. Дебюсси — «Лунный свет»", file: "debussy_clair_de_lune.mp3" },
+                    { title: "Л. ван Бетховен — Лунная соната (1-я часть)", file: "beethoven_moonlight_sonata.mp3" }
+                ]
+            },
+            {
+                icon: "images/ear.png",
+                title: "Ухо",
+                desc: "Угадай песню из «Детского альбома» П. И. Чайковского",
+                colorFront: "#ffaaa5",
+                colorBack: "#ff8b94",
+                audioFiles: [
+                    { title: "Утренняя молитва", file: "chaikovsky_utrennyaya_molitva.mp3" },
+                    { title: "Зимнее утро", file: "chaikovsky_zimnee_utro.mp3" },
+                    { title: "Игра в лошадки", file: "chaikovsky_igra_v_loshadki.mp3" },
+                    { title: "Мама", file: "chaikovsky_mama.mp3" },
+                    { title: "Марш деревянных солдатиков", file: "chaikovsky_soldatiki.mp3" },
+                    { title: "Болезнь куклы", file: "chaikovsky_bolezn_kukly.mp3" },
+                    { title: "Похороны куклы", file: "chaikovsky_pohorony_kukly.mp3" },
+                    { title: "Вальс", file: "chaikovsky_waltz_detsky.mp3" },
+                    { title: "Новая кукла", file: "chaikovsky_novaya_kukla.mp3" },
+                    { title: "Мазурка", file: "chaikovsky_mazurka.mp3" },
+                    { title: "Русская песня", file: "chaikovsky_russkaya_pesnya.mp3" },
+                    { title: "Мужик на гармонике играет", file: "chaikovsky_muzhik_garmon.mp3" },
+                    { title: "Камаринская", file: "chaikovsky_kamarinskaya.mp3" },
+                    { title: "Полька", file: "chaikovsky_polka.mp3" },
+                    { title: "Итальянская песенка", file: "chaikovsky_italyanskaya_pesnya.mp3" },
+                    { title: "Старинная французская песенка", file: "chaikovsky_french_pesnya.mp3" },
+                    { title: "Немецкая песенка", file: "chaikovsky_german_pesnya.mp3" },
+                    { title: "Неаполитанская песенка", file: "chaikovsky_naples_pesnya.mp3" },
+                    { title: "Нянина сказка", file: "chaikovsky_nyanina_skazka.mp3" },
+                    { title: "Баба-Яга", file: "chaikovsky_baba_yaga.mp3" },
+                    { title: "Сладкая грёза", file: "chaikovsky_sladkaya_gryoza.mp3" },
+                    { title: "Песня жаворонка", file: "chaikovsky_song_lark.mp3" },
+                    { title: "Шарманщик поёт", file: "chaikovsky_sharmanshik.mp3" },
+                    { title: "В церкви", file: "chaikovsky_v_cerkvi.mp3" }
+                ]
+            },
+            {
+                icon: "images/brain.png",
+                title: "Дирижёр",
+                desc: "Правая и левая руки параллельно рисуют разные фигуры! Повторяй за учителем! Не забывай считать про себя, чтобы не сбиться!",
+                colorFront: "#e0bbe4",
+                colorBack: "#957dad",
+                audioFiles: [
+                    { title: "Valley of Wolves — «Make It Look Easy»", file: "valley_wolves_make_it_look_easy.mp3" }
+                ]
+            },
+            {
+                icon: "images/bird.png",
+                title: "Крылатый шаг",
+                desc: "Парный танец-игра!",
+                colorFront: "#87CEEB",
+                colorBack: "#E0F7FA",
+                audioFiles: [
+                    { title: "Ж. Оффенбах — Канкан", file: "offenbach_cancan.mp3" }
+                ]
+            }
+        ];
+
+        // ==================== //
+        // ОСНОВНЫЕ ЭЛЕМЕНТЫ И ПЕРЕМЕННЫЕ //
+        // ==================== //
+        const cardsContainer = document.getElementById('cardsContainer');
+        const spinBtn = document.getElementById('spinBtn');
+        const resultIcon = document.getElementById('resultIcon');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultDesc = document.getElementById('resultDesc');
+        const audioContainer = document.getElementById('audioContainer');
+        
+        const conductorVideoModal = document.getElementById('conductorVideoModal');
+        const sheepVideo = document.getElementById('sheepVideo');
+        const conductorVideoOverlay = document.getElementById('conductorVideoOverlay');
+        const conductorVideoStatus = document.getElementById('conductorVideoStatus');
+        
+        const birdVideoModal = document.getElementById('birdVideoModal');
+        const birdVideo = document.getElementById('birdVideo');
+        const birdVideoOverlay = document.getElementById('birdVideoOverlay');
+        const birdVideoStatus = document.getElementById('birdVideoStatus');
+        
+        let isSpinning = false;
+        let lastSelectedIndex = -1;
+        let currentAudio = null;
+        let currentItemIndex = -1;
+        let currentAudioTitle = "";
+        let isConductorVideoPlaying = false;
+        let isConductorAudioPlaying = false;
+        let isBirdVideoPlaying = false;
+        let isBirdAudioPlaying = false;
+
+        // ==================== //
+        // ОСНОВНЫЕ ФУНКЦИИ ИГРЫ //
+        // ==================== //
+        
+        // Создаем карточки
+        function createCards() {
+            cardsContainer.innerHTML = '';
+            
+            items.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.index = index;
+                
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="${item.icon}" alt="${item.title}" class="card-icon">
+                            <div class="title">${item.title}</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="desc">${item.desc}</div>
+                        </div>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    if (isSpinning) return;
+                    card.classList.toggle('flipped');
+                    showResult(index);
+                });
+                
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        // Получить случайный аудиофайл
+        function getRandomAudio(item) {
+            const randomIndex = Math.floor(Math.random() * item.audioFiles.length);
+            return item.audioFiles[randomIndex];
+        }
+
+        // Остановить текущее аудио
+        function stopCurrentAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+        }
+
+        // Показать результат с музыкой
+        function showResult(index) {
+            const item = items[index];
+            const randomAudio = getRandomAudio(item);
+            
+            currentItemIndex = index;
+            currentAudioTitle = randomAudio.title;
+            
+            // Обновляем иконку в результате
+            resultIcon.innerHTML = `<img src="${item.icon}" alt="${item.title}" style="width: 80px; height: 80px;">`;
+            resultTitle.textContent = item.title;
+            resultDesc.textContent = item.desc;
+            
+            // Останавливаем предыдущее аудио
+            stopCurrentAudio();
+            
+            // Для карточки "Ухо" - особый случай
+            if (index === 6) { // 👂 Ухо
+                audioContainer.innerHTML = `
+                    <audio controls class="audio-player" autoplay>
+                        <source src="audio/${randomAudio.file}" type="audio/mpeg">
+                        Ваш браузер не поддерживает аудио.
+                    </audio>
+                    <div class="music-info">
+                        <div>Попробуй угадать, что это за пьеса из «Детского альбома»!</div>
+                        <button class="reveal-btn" id="revealBtn">Показать название</button>
+                    </div>
+                `;
+            }
+            // Для карточки "Дирижёр" - добавляем кнопку для видео
+            else if (index === 7) { // 🧠 Дирижёр
+                audioContainer.innerHTML = `
+                    <audio controls class="audio-player" id="conductorAudio">
+                        <source src="audio/${randomAudio.file}" type="audio/mpeg">
+                        Ваш браузер не поддерживает аудио.
+                    </audio>
+                    <div class="music-info">Сейчас играет: ${randomAudio.title}</div>
+                    <button class="video-instruction-btn" onclick="openConductorVideo()">
+                        🎬 Открыть видео
+                    </button>
+                `;
+                
+                // Добавляем обработчик для аудио Дирижёра
+                const conductorAudio = document.getElementById('conductorAudio');
+                if (conductorAudio) {
+                    setupConductorAudio(conductorAudio);
+                }
+            }
+            // Для карточки "Крылатый шаг" - добавляем кнопку для видео
+            else if (index === 8) { // 🐦 Крылатый шаг
+                audioContainer.innerHTML = `
+                    <audio controls class="audio-player" id="birdAudio">
+                        <source src="audio/${randomAudio.file}" type="audio/mpeg">
+                        Ваш браузер не поддерживает аудио.
+                    </audio>
+                    <div class="music-info">Сейчас играет: ${randomAudio.title}</div>
+                    <button class="video-instruction-btn bird-btn" onclick="openBirdVideo()">
+                        🐦 Открыть видео
+                    </button>
+                `;
+                
+                // Добавляем обработчик для аудио Крылатого шага
+                const birdAudio = document.getElementById('birdAudio');
+                if (birdAudio) {
+                    setupBirdAudio(birdAudio);
+                }
+            }
+            // Для остальных карточек
+            else {
+                audioContainer.innerHTML = `
+                    <audio controls class="audio-player" autoplay>
+                        <source src="audio/${randomAudio.file}" type="audio/mpeg">
+                        Ваш браузер не поддерживает аудио.
+                    </audio>
+                    <div class="music-info">Сейчас играет: ${randomAudio.title}</div>
+                `;
+            }
+            
+            currentAudio = audioContainer.querySelector('audio');
+            
+            // Обработчик для кнопки "Показать название" (Ухо)
+            if (index === 6) {
+                const revealBtn = document.getElementById('revealBtn');
+                revealBtn.addEventListener('click', () => {
+                    const musicInfo = audioContainer.querySelector('.music-info');
+                    musicInfo.innerHTML = `Это: <strong>${currentAudioTitle}</strong>`;
+                });
+            }
+            
+            // Анимация
+            resultIcon.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                resultIcon.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        // Настройка аудио для Дирижёра
+        function setupConductorAudio(audioElement) {
+            audioElement.addEventListener('play', function() {
+                isConductorAudioPlaying = true;
+                
+                // Если видео окно не открыто - открываем
+                if (conductorVideoModal.style.display !== 'flex') {
+                    openConductorVideo();
+                }
+                
+                // Если видео не играет, но оверлей скрыт - запускаем видео
+                if (!isConductorVideoPlaying && conductorVideoOverlay.style.display === 'none') {
+                    sheepVideo.play();
+                    isConductorVideoPlaying = true;
+                    updateConductorVideoStatus('Видео и музыка играют');
+                }
+                
+                updateConductorVideoStatus('Музыка играет');
+            });
+            
+            audioElement.addEventListener('pause', function() {
+                isConductorAudioPlaying = false;
+                
+                // Если видео играет - ставим на паузу
+                if (!sheepVideo.paused) {
+                    sheepVideo.pause();
+                    updateConductorVideoStatus('Музыка на паузе');
+                }
+            });
+            
+            audioElement.addEventListener('ended', function() {
+                isConductorAudioPlaying = false;
+                
+                // Останавливаем видео
+                sheepVideo.pause();
+                isConductorVideoPlaying = false;
+                
+                // Показываем сообщение
+                updateConductorVideoStatus('Упражнение завершено!');
+                
+                // Через 3 секунды закрываем
+                setTimeout(() => {
+                    if (!isConductorAudioPlaying && !isConductorVideoPlaying) {
+                        closeConductorVideo();
+                    }
+                }, 3000);
+            });
+        }
+
+        // Настройка аудио для Крылатого шага
+        function setupBirdAudio(audioElement) {
+            audioElement.addEventListener('play', function() {
+                isBirdAudioPlaying = true;
+                
+                // Если видео окно не открыто - открываем
+                if (birdVideoModal.style.display !== 'flex') {
+                    openBirdVideo();
+                }
+                
+                // Если видео не играет, но оверлей скрыт - запускаем видео
+                if (!isBirdVideoPlaying && birdVideoOverlay.style.display === 'none') {
+                    birdVideo.play();
+                    isBirdVideoPlaying = true;
+                    updateBirdVideoStatus('Видео и музыка играют');
+                }
+                
+                updateBirdVideoStatus('Музыка играет');
+            });
+            
+            audioElement.addEventListener('pause', function() {
+                isBirdAudioPlaying = false;
+                
+                // Если видео играет - ставим на паузу
+                if (!birdVideo.paused) {
+                    birdVideo.pause();
+                    updateBirdVideoStatus('Музыка на паузе');
+                }
+            });
+            
+            audioElement.addEventListener('ended', function() {
+                isBirdAudioPlaying = false;
+                
+                // Останавливаем видео
+                birdVideo.pause();
+                isBirdVideoPlaying = false;
+                
+                // Показываем сообщение
+                updateBirdVideoStatus('Танец завершён!');
+                
+                // Через 3 секунды закрываем
+                setTimeout(() => {
+                    if (!isBirdAudioPlaying && !isBirdVideoPlaying) {
+                        closeBirdVideo();
+                    }
+                }, 3000);
+            });
+        }
+
+        // Случайный выбор карточки
+        function spinDrum() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            spinBtn.disabled = true;
+            
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.classList.remove('flipped');
+            });
+            
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * items.length);
+            } while (randomIndex === lastSelectedIndex && items.length > 1);
+            
+            lastSelectedIndex = randomIndex;
+            const selectedCard = cards[randomIndex];
+            
+            // Анимация выбора
+            cards.forEach(card => {
+                card.style.transform = 'scale(0.95)';
+                card.style.opacity = '0.7';
+            });
+            
+            let flashes = 0;
+            const flashInterval = setInterval(() => {
+                cards.forEach(card => {
+                    card.style.transform = flashes % 2 === 0 ? 'scale(1.05)' : 'scale(0.95)';
+                });
+                flashes++;
+                
+                if (flashes > 8) {
+                    clearInterval(flashInterval);
+                    
+                    cards.forEach(card => {
+                        if (card !== selectedCard) {
+                            card.style.transform = 'scale(0.9)';
+                            card.style.opacity = '0.5';
+                        }
+                    });
+                    
+                    selectedCard.style.transform = 'scale(1.1)';
+                    selectedCard.style.opacity = '1';
+                    selectedCard.style.boxShadow = '0 0 25px gold';
+                    
+                    setTimeout(() => {
+                        selectedCard.classList.add('flipped');
+                        showResult(randomIndex);
+                        
+                        setTimeout(() => {
+                            cards.forEach(card => {
+                                card.style.transform = '';
+                                card.style.opacity = '';
+                                card.style.boxShadow = '';
+                            });
+                            
+                            isSpinning = false;
+                            spinBtn.disabled = false;
+                        }, 1000);
+                        
+                    }, 500);
+                }
+            }, 100);
+        }
+
+        // ==================== //
+        // ФУНКЦИИ УПРАВЛЕНИЯ ВИДЕО ДИРИЖЁРА //
+        // ==================== //
+        
+        function openConductorVideo() {
+            conductorVideoModal.style.display = 'flex';
+            conductorVideoOverlay.style.display = 'flex';
+            sheepVideo.pause();
+            sheepVideo.currentTime = 0;
+            conductorVideoStatus.textContent = 'Ожидание запуска...';
+            isConductorVideoPlaying = false;
+        }
+        
+        function startConductorVideo() {
+            conductorVideoOverlay.style.display = 'none';
+            sheepVideo.play();
+            
+            const conductorAudio = document.getElementById('conductorAudio');
+            if (conductorAudio && conductorAudio.paused) {
+                conductorAudio.play();
+            }
+            
+            isConductorVideoPlaying = true;
+            updateConductorVideoStatus('Видео и музыка играют');
+        }
+        
+        function restartConductorVideo() {
+            sheepVideo.currentTime = 0;
+            sheepVideo.play();
+            
+            const conductorAudio = document.getElementById('conductorAudio');
+            if (conductorAudio) {
+                conductorAudio.currentTime = 0;
+                conductorAudio.play();
+            }
+            
+            conductorVideoOverlay.style.display = 'none';
+            isConductorVideoPlaying = true;
+            updateConductorVideoStatus('Видео и музыка играют');
+        }
+        
+        function closeConductorVideo() {
+            conductorVideoModal.style.display = 'none';
+            sheepVideo.pause();
+            sheepVideo.currentTime = 0;
+            
+            const conductorAudio = document.getElementById('conductorAudio');
+            if (conductorAudio) {
+                conductorAudio.pause();
+                conductorAudio.currentTime = 0;
+            }
+            
+            isConductorVideoPlaying = false;
+            isConductorAudioPlaying = false;
+        }
+        
+        function updateConductorVideoStatus(message) {
+            conductorVideoStatus.textContent = message;
+        }
+
+        // Обработчики для видео Дирижёра
+        sheepVideo.addEventListener('play', function() {
+            isConductorVideoPlaying = true;
+            updateConductorVideoStatus('Видео играет');
+        });
+        
+        sheepVideo.addEventListener('pause', function() {
+            isConductorVideoPlaying = false;
+            updateConductorVideoStatus('Видео на паузе');
+        });
+        
+        sheepVideo.addEventListener('ended', function() {
+            const conductorAudio = document.getElementById('conductorAudio');
+            if (conductorAudio && !conductorAudio.paused) {
+                this.currentTime = 0;
+                this.play();
+                updateConductorVideoStatus('Повтор видео...');
+            } else {
+                isConductorVideoPlaying = false;
+                updateConductorVideoStatus('Видео завершено');
+            }
+        });
+
+        // ==================== //
+        // ФУНКЦИИ УПРАВЛЕНИЯ ВИДЕО КРЫЛАТОГО ШАГА //
+        // ==================== //
+        
+        function openBirdVideo() {
+            birdVideoModal.style.display = 'flex';
+            birdVideoOverlay.style.display = 'flex';
+            birdVideo.pause();
+            birdVideo.currentTime = 0;
+            birdVideoStatus.textContent = 'Ожидание запуска...';
+            isBirdVideoPlaying = false;
+        }
+        
+        function startBirdVideo() {
+            birdVideoOverlay.style.display = 'none';
+            birdVideo.play();
+            
+            const birdAudio = document.getElementById('birdAudio');
+            if (birdAudio && birdAudio.paused) {
+                birdAudio.play();
+            }
+            
+            isBirdVideoPlaying = true;
+            updateBirdVideoStatus('Видео и музыка играют');
+        }
+        
+        function restartBirdVideo() {
+            birdVideo.currentTime = 0;
+            birdVideo.play();
+            
+            const birdAudio = document.getElementById('birdAudio');
+            if (birdAudio) {
+                birdAudio.currentTime = 0;
+                birdAudio.play();
+            }
+            
+            birdVideoOverlay.style.display = 'none';
+            isBirdVideoPlaying = true;
+            updateBirdVideoStatus('Видео и музыка играют');
+        }
+        
+        function closeBirdVideo() {
+            birdVideoModal.style.display = 'none';
+            birdVideo.pause();
+            birdVideo.currentTime = 0;
+            
+            const birdAudio = document.getElementById('birdAudio');
+            if (birdAudio) {
+                birdAudio.pause();
+                birdAudio.currentTime = 0;
+            }
+            
+            isBirdVideoPlaying = false;
+            isBirdAudioPlaying = false;
+        }
+        
+        function updateBirdVideoStatus(message) {
+            birdVideoStatus.textContent = message;
+        }
+
+        // Обработчики для видео Крылатого шага
+        birdVideo.addEventListener('play', function() {
+            isBirdVideoPlaying = true;
+            updateBirdVideoStatus('Видео играет');
+        });
+        
+        birdVideo.addEventListener('pause', function() {
+            isBirdVideoPlaying = false;
+            updateBirdVideoStatus('Видео на паузе');
+        });
+        
+        birdVideo.addEventListener('ended', function() {
+            const birdAudio = document.getElementById('birdAudio');
+            if (birdAudio && !birdAudio.paused) {
+                this.currentTime = 0;
+                this.play();
+                updateBirdVideoStatus('Повтор видео...');
+            } else {
+                isBirdVideoPlaying = false;
+                updateBirdVideoStatus('Видео завершено');
+            }
+        });
+
+        // ==================== //
+        // ОБЩИЕ ОБРАБОТЧИКИ //
+        // ==================== //
+        
+        // Закрытие по клавише ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                if (conductorVideoModal.style.display === 'flex') {
+                    closeConductorVideo();
+                }
+                if (birdVideoModal.style.display === 'flex') {
+                    closeBirdVideo();
+                }
+            }
+        });
+
+        // ==================== //
+        // ИНИЦИАЛИЗАЦИЯ //
+        // ==================== //
+        
+        createCards();
+        spinBtn.addEventListener('click', spinDrum);
+        showResult(0);
+        
+        console.log('Игра "Музыкальная лаборатория" готова!');
+        console.log('Добавлен новый сектор: "Крылатый шаг"');
+    </script>
+</body>
+</html>

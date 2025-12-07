@@ -1,0 +1,1428 @@
+﻿﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Музыкальная библиотека</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f5ff, #f8f0f5);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(201, 122, 160, 0.15);
+        }
+
+        h1 {
+            color: #c97aa0;
+            text-align: center;
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #c97aa0;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .sector-section {
+            margin-bottom: 50px;
+        }
+
+        .sector-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .sector-icon {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+        }
+
+        .sector-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .sector-title {
+            color: #b5659e;
+            font-size: 1.8em;
+            margin: 0;
+        }
+
+        .sector-desc {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            padding-left: 95px;
+        }
+
+        .music-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding-left: 95px;
+        }
+
+        .music-card {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 8px solid;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .music-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .music-card h3 {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            min-height: 60px;
+        }
+
+        .music-card p {
+            color: #777;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .audio-player {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 8px;
+            background: #eee;
+        }
+
+        audio::-webkit-media-controls-panel {
+            background: #f0d6e8;
+        }
+
+        /* Специальные стили для карточек с видео */
+        .conductor-card {
+            position: relative;
+            border: 2px solid #fc2847;
+        }
+
+        .conductor-card::before {
+            content: "🎬 С видео";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #fc2847;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .bird-card {
+            position: relative;
+            border: 2px solid #1E90FF;
+        }
+
+        .bird-card::before {
+            content: "🐦 С видео";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #1E90FF;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        /* Цвета границ по секторам */
+        .color-leaf { border-left-color: #009900; }
+        .color-drum { border-left-color: #641349; }
+        .color-wind { border-left-color: #122faa; }
+        .color-lion { border-left-color: #ff4d00; }
+        .color-circus { border-left-color: #f80000; }
+        .color-moon { border-left-color: #a0a0a0; }
+        .color-ear { border-left-color: #ffd105; }
+        .color-brain { border-left-color: #fc2847; }
+        .color-bird { border-left-color: #87CEEB; } /* Новый цвет для Крылатого шага */
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #888;
+            font-size: 0.9em;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .legend {
+            background: #f8f0f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 30px 0;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        /* Адаптивность для мобильных */
+        @media (max-width: 768px) {
+            .sector-desc,
+            .music-grid {
+                padding-left: 20px;
+            }
+            
+            .sector-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .sector-icon {
+                width: 60px;
+                height: 60px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .header-icon {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        /* ==================== */
+        /* СТИЛИ ДЛЯ ВИДЕО-ОКОН */
+        /* ==================== */
+        
+        .video-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .video-modal-content {
+            position: relative;
+            max-width: 800px;
+            width: 90%;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-header {
+            background: linear-gradient(135deg, #fc2847, #ff6b9d);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .video-header.bird-header {
+            background: linear-gradient(135deg, #87CEEB, #1E90FF);
+        }
+
+        .video-instructions {
+            background: #fff9e6;
+            padding: 15px;
+            border-bottom: 2px dashed #9da9e3;
+            text-align: center;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .video-container {
+            position: relative;
+            background: black;
+        }
+
+        #sheepVideo, #birdVideo {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .video-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .video-btn {
+            background: #fc2847;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            min-width: 150px;
+            justify-content: center;
+        }
+
+        .video-btn.bird-btn {
+            background: #1E90FF;
+        }
+
+        .video-btn:hover {
+            background: #d9223f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(252, 40, 71, 0.3);
+        }
+
+        .video-btn.bird-btn:hover {
+            background: #187bcd;
+        }
+
+        .video-btn:active {
+            transform: translateY(0);
+        }
+
+        .video-btn.secondary {
+            background: #666;
+        }
+
+        .video-btn.secondary:hover {
+            background: #555;
+        }
+
+        .close-video {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.7);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            transition: background 0.3s;
+        }
+
+        .close-video:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .video-overlay h3 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #9da9e3;
+        }
+
+        .video-overlay p {
+            font-size: 1.2em;
+            max-width: 600px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .start-video-btn {
+            background: #99093e;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .start-video-btn:hover {
+            background: #99093e;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .video-status {
+            text-align: center;
+            padding: 10px;
+            background: #e8f5e9;
+            color: #99093e;
+            font-weight: bold;
+            border-radius: 0 0 15px 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Назад на главную</a>
+
+        <h1>
+            <img src="images/library.png" alt="Библиотека" class="header-icon">
+            Музыкальная библиотека
+        </h1>
+        <p class="subtitle">Каждому сектору игры соответствует несколько музыкальных вариантов</p>
+
+        <!-- Сектор 1: Листик -->
+        <div class="sector-section">
+            <div class="sector-header">
+                <div class="sector-icon">
+                    <img src="images/leaf.png" alt="Листик" width="60" height="60">
+                </div>
+                <h2 class="sector-title">Листик</h2>
+            </div>
+            <p class="sector-desc"><strong>Задание:</strong> Двигаться ТИХО и ПЛАВНО на носочках</p>
+            
+            <div class="music-grid">
+                <div class="music-card color-leaf">
+                    <h3>Эдвард Григ — «Утро»</h3>
+                    <p>Свежесть, пробуждение, первые лучи</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/grig_utro.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-leaf">
+                    <h3>П.И. Чайковский — Танец Феи Драже</h3>
+                    <p>Волшебная, звенящая, снежинки</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/chaikovsky_fairy_dragee.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-leaf">
+                    <h3>А. Лядов — «Музыкальная табакерка»</h3>
+                    <p>Игрушечная, миниатюрная</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/lyadov_tabakerka.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-leaf">
+                    <h3>Н. Паганини — Кампанелла</h3>
+                    <p>Виртуозная, блестящая, колокольчики</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/paganini_la_campanella.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-leaf">
+                    <h3>П.И. Чайковский — Танец маленьких лебедей</h3>
+                    <p>Изящный, лёгкий, грациозный</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/chaikovsky_swan_lake_swans.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сектор 2: Барабан -->
+        <div class="sector-section">
+            <div class="sector-header">
+                <div class="sector-icon">
+                    <img src="images/drum.png" alt="Барабан" width="60" height="60">
+                </div>
+                <h2 class="sector-title">Барабан</h2>
+            </div>
+            <p class="sector-desc"><strong>Задание:</strong> Маршировать ГРОМКО и ЧЕТКО</p>
+            
+            <div class="music-grid">
+                <div class="music-card color-drum">
+                    <h3>В. Агапкин — «Прощание славянки»</h3>
+                    <p>Торжественный, патриотичный марш</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/agapkin_slavyanka.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-drum">
+                    <h3>Ж. Бизе — Марш тореадора (из оперы «Кармен»)</h3>
+                    <p>Торжественный, испанский, энергичный</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/bizet_toreador_march.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-drum">
+                    <h3>И. Штраус — Марш Радецкого</h3>
+                    <p>Бравурный, ритмичный, праздничный</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/strauss_radetzky_march.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-drum">
+                    <h3>Марш авиаторов («Всё выше»)</h3>
+                    <p>Советский, энергичный, подъёмный</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/march_aviators.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-drum">
+                    <h3>Т. Хренников — Марш артиллеристов</h3>
+                    <p>Бодрый, весёлый, солдатский</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/khrennikov_artillery_march.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-drum">
+                    <h3>Народная песня — «Солдатушки, бравы ребятушки»</h3>
+                    <p>Русская народная, удалая, строевая</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/soldatushki.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сектор 3: Ветерок -->
+        <div class="sector-section">
+            <div class="sector-header">
+                <div class="sector-icon">
+                    <img src="images/wind.png" alt="Ветерок" width="60" height="60">
+                </div>
+                <h2 class="sector-title">Ветерок</h2>
+            </div>
+            <p class="sector-desc"><strong>Задание:</strong> КРУЖИТЬСЯ как осенние листья</p>
+            
+            <div class="music-grid">
+                <div class="music-card color-wind">
+                    <h3>П.И. Чайковский — Вальс цветов</h3>
+                    <p>Пышный, грациозный вальс</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/chaikovsky_waltz_flowers.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-wind">
+                    <h3>Ф. Шопен — Вальс до-диез минор</h3>
+                    <p>Поэтичный, меланхоличный</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/chopin_waltz_cis_minor.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-wind">
+                    <h3>П.И. Чайковский — Вальс («Спящая красавица»)</h3>
+                    <p>Сказочный, плавный, волшебный</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/chaikovsky_waltz_sleeping_beauty.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-wind">
+                    <h3>И. Брамс — Венгерский танец №5</h3>
+                    <p>Страстный, вихревой, с контрастами</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/brahms_hungarian_dance_5.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сектор 4: Лев -->
+        <div class="sector-section">
+            <div class="sector-header">
+                <div class="sector-icon">
+                    <img src="images/lion.png" alt="Лев" width="60" height="60">
+                </div>
+                <h2 class="sector-title">Лев</h2>
+            </div>
+            <p class="sector-desc"><strong>Задание:</strong> Ходить ВАЖНО и ГРОЗНО</p>
+            
+            <div class="music-grid">
+                <div class="music-card color-lion">
+                    <h3>К. Сен-Санс — «Королевский марш льва»</h3>
+                    <p>Величие, мощь, царственная поступь</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/saint_saens_lion.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-lion">
+                    <h3>Э. Григ — «В пещере горного короля»</h3>
+                    <p>Тёмная, нарастающая, таинственная</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/grig_cave_mountain_king.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-lion">
+                    <h3>И.С. Бах — Токката и фуга ре минор</h3>
+                    <p>Монументальная, мрачная, готическая</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/bach_toccata_fugue.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-lion">
+                    <h3>С. Прокофьев — Танец рыцарей</h3>
+                    <p>Тяжёлая, решительная, средневековая</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/prokofiev_dance_knights.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сектор 5: Цирк -->
+        <div class="sector-section">
+            <div class="sector-header">
+                <div class="sector-icon">
+                    <img src="images/circus.png" alt="Цирк" width="60" height="60">
+                </div>
+                <h2 class="sector-title">Цирк</h2>
+            </div>
+            <p class="sector-desc"><strong>Задание:</strong> Делать смешные гримасы и нелепые движения</p>
+            
+            <div class="music-grid">
+                <div class="music-card color-circus">
+                    <h3>Д. Кабалевский — «Клоуны»</h3>
+                    <p>Добродушный, кувыркающийся, цирковой</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/kabalevsky_clowns.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-circus">
+                    <h3>И.С. Бах — «Шутка»</h3>
+                    <p>Изящная, игривая, улыбчивая</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/bach_badinerie.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-circus">
+                    <h3>М. Мусоргский — «Балет невылупившихся птенцов»</h3>
+                    <p>Неуклюжий, суетливый, комичный</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/musorgsky_chicks.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-circus">
+                    <h3>Г. Гладков — Песня охраны</h3>
+                    <p>Глуповатый, марширующий, юмористичный</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/gladkov_bremen_guard.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-circus">
+                    <h3>А. Хачатурян — Танец с саблями (из балета «Гаянэ»)</h3>
+                    <p>Энергичный, огненный, ритмичный</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/khachaturian_sabre_dance.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-circus">
+                    <h3>В. Гаврилин — Тарантелла (из сюиты «Теремок»)</h3>
+                    <p>Вихревой, народный, стремительный</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/gavrilin_tarantella.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сектор 6: Луна -->
+        <div class="sector-section">
+            <div class="sector-header">
+                <div class="sector-icon">
+                    <img src="images/moon.png" alt="Луна" width="60" height="60">
+                </div>
+                <h2 class="sector-title">Луна</h2>
+            </div>
+            <p class="sector-desc"><strong>Задание:</strong> ЗАМЕРЕТЬ, закрыть глаза и покачиваться</p>
+            
+            <div class="music-grid">
+                <div class="music-card color-moon">
+                    <h3>Н. Римский-Корсаков — Колыбельная Волховы</h3>
+                    <p>Убаюкивающая, морская, сказочная</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/rimsky_korsakov_volkhova_lullaby.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-moon">
+                    <h3>К. Дебюсси — «Лунный свет» (Clair de Lune)</h3>
+                    <p>Зыбкое, мерцающее, ностальгическое</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/debussy_clair_de_lune.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="music-card color-moon">
+                    <h3>Л. ван Бетховен — Лунная соната (1-я часть)</h3>
+                    <p>Задумчивое, печальное, созерцательное</p>
+                    <audio controls class="audio-player">
+                        <source src="audio/beethoven_moonlight_sonata.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+        </div>
+
+<!-- Сектор 7: Ухо -->
+<div class="sector-section">
+    <div class="sector-header">
+        <div class="sector-icon">
+            <img src="images/ear.png" alt="Ухо" width="60" height="60">
+        </div>
+        <h2 class="sector-title">Ухо</h2>
+    </div>
+    <p class="sector-desc"><strong>Задание:</strong> Угадать произведение из «Детского альбома» Петра Ильича Чайковского</p>
+    
+    <div class="music-grid">
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Утренняя молитва»</h3>
+            <p>Тихое, сосредоточенное, благочестивое</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_utrennyaya_molitva.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Зимнее утро»</h3>
+            <p>Холодное, сумрачное, задумчивое</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_zimnee_utro.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Игра в лошадки»</h3>
+            <p>Резвая, скачущая, детская</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_igra_v_loshadki.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Мама»</h3>
+            <p>Нежная, ласковая, тёплая</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_mama.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Марш деревянных солдатиков»</h3>
+            <p>Игрушечный, чёткий, механический</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_soldatiki.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Болезнь куклы»</h3>
+            <p>Грустное, жалобное, замершее</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_bolezn_kukly.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Похороны куклы»</h3>
+            <p>Траурное, печальное, скорбное</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_pohorony_kukly.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Вальс»</h3>
+            <p>Плавный, грациозный, детский</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_waltz_detsky.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Новая кукла»</h3>
+            <p>Радостная, оживлённая, восторженная</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_novaya_kukla.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Мазурка»</h3>
+            <p>Польский танец, бойкий, ритмичный</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_mazurka.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Русская песня»</h3>
+            <p>Народная, распевная, душевная</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_russkaya_pesnya.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Мужик на гармонике играет»</h3>
+            <p>Простецкая, наигранная, гармошечная</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_muzhik_garmon.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Камаринская»</h3>
+            <p>Плясовая, удалая, русская</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_kamarinskaya.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Полька»</h3>
+            <p>Лёгкая, весёлая, прыгучая</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_polka.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Итальянская песенка»</h3>
+            <p>Напевная, солнечная, южная</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_italyanskaya_pesnya.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Старинная французская песенка»</h3>
+            <p>Старинная, элегичная, средневековая</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_french_pesnya.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Немецкая песенка»</h3>
+            <p>Простая, незатейливая, народная</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_german_pesnya.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Неаполитанская песенка»</h3>
+            <p>Жизнерадостная, темпераментная, итальянская</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_naples_pesnya.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Нянина сказка»</h3>
+            <p>Таинственная, повествовательная</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_nyanina_skazka.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Баба-Яга»</h3>
+            <p>Злая, стремительная, пугающая</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_baba_yaga.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Сладкая грёза»</h3>
+            <p>Мечтательная, нежная, воздушная</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_sladkaya_gryoza.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Песня жаворонка»</h3>
+            <p>Светлая, трепетная, весенняя</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_song_lark.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «Шарманщик поёт»</h3>
+            <p>Тоскливая, монотонная, уличная</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_sharmanshik.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="music-card color-ear">
+            <h3>П.И. Чайковский — «В церкви»</h3>
+            <p>Торжественное, благочестивое, завершающее</p>
+            <audio controls class="audio-player">
+                <source src="audio/chaikovsky_v_cerkvi.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+    </div>
+</div>
+
+        <!-- ==================== -->
+        <!-- СЕКЦИЯ ДИРИЖЁРА С ВИДЕО -->
+        <!-- ==================== -->
+        <div class="sector-section">
+            <div class="sector-header">
+                <div class="sector-icon">
+                    <img src="images/brain.png" alt="Дирижёр" width="60" height="60">
+                </div>
+                <h2 class="sector-title">Дирижёр</h2>
+            </div>
+            <p class="sector-desc"><strong>Задание:</strong> Повторять за учителем, две руки параллельно делают разные движения!</p>
+            
+            <div class="music-grid">
+                <div class="music-card color-brain conductor-card">
+                    <h3>Valley of Wolves — «Make It Look Easy»</h3>
+                    <p>Современный, чёткий, энергичный ритм + видеоупражнение с овечкой</p>
+                    <div class="audio-with-video">
+                        <audio controls class="audio-player" id="conductorAudio">
+                            <source src="audio/valley_wolves_make_it_look_easy.mp3" type="audio/mpeg">
+                        </audio>
+                        <button class="video-btn" onclick="openConductorVideo()" style="margin-top: 10px;">
+                            🎬 Открыть видео
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== -->
+        <!-- СЕКЦИЯ КРЫЛАТЫЙ ШАГ С ВИДЕО -->
+        <!-- ==================== -->
+        <div class="sector-section">
+            <div class="sector-header">
+                <div class="sector-icon">
+                    <img src="images/bird.png" alt="Крылатый шаг" width="60" height="60">
+                </div>
+                <h2 class="sector-title">Крылатый шаг</h2>
+            </div>
+            <p class="sector-desc"><strong>Задание:</strong> Парный танец-игра! Синхронность и веселье!</p>
+            
+            <div class="music-grid">
+                <div class="music-card color-bird bird-card">
+                    <h3>Ж. Оффенбах — Канкан</h3>
+                    <p>Зажигательный, быстрый, парный танец + видео с птичкой</p>
+                    <div class="audio-with-video">
+                        <audio controls class="audio-player" id="birdAudio">
+                            <source src="audio/offenbach_cancan.mp3" type="audio/mpeg">
+                        </audio>
+                        <button class="video-btn bird-btn" onclick="openBirdVideo()" style="margin-top: 10px;">
+                            🐦 Открыть видео
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== -->
+    <!-- ВИДЕО-МОДАЛЬНОЕ ОКНО ДИРИЖЁРА -->
+    <!-- ==================== -->
+    <div id="conductorVideoModal" class="video-modal">
+        <div class="video-modal-content">
+            <span class="close-video" onclick="closeConductorVideo()">&times;</span>
+            
+            <div class="video-header">
+                <h2>Весёлая овечка для хорошего настроения!</h2>
+            </div>
+            
+            <div class="video-instructions">
+                <p><strong>ПРАВИЛА:</strong> Повторяйте движения под ритм музыки за учителем! Левая и правая рука работают отдельно.</p>
+            </div>
+            
+            <div class="video-container">
+                <video id="sheepVideo">
+                    <source src="video/sheep.mp4" type="video/mp4">
+                    Ваш браузер не поддерживает видео.
+                </video>
+                
+                <div id="conductorVideoOverlay" class="video-overlay">
+                    <h3>Готовы начать упражнение?</h3>
+                    <button class="start-video-btn" onclick="startConductorVideo()">
+                        ▶️ СТАРТ
+                    </button>
+                    <p style="margin-top: 20px; font-size: 0.9em; color: #ccc;">
+                        Нажмите СТАРТ, когда будете готовы
+                    </p>
+                </div>
+            </div>
+            
+            <div class="video-controls">
+                <button class="video-btn" onclick="restartConductorVideo()">
+                    🔄 Заново
+                </button>
+                <button class="video-btn secondary" onclick="closeConductorVideo()">
+                    ⏹ Стоп
+                </button>
+            </div>
+            
+            <div class="video-status" id="conductorVideoStatus">
+                Ожидание запуска...
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== -->
+    <!-- ВИДЕО-МОДАЛЬНОЕ ОКНО КРЫЛАТЫЙ ШАГ -->
+    <!-- ==================== -->
+    <div id="birdVideoModal" class="video-modal">
+        <div class="video-modal-content">
+            <span class="close-video" onclick="closeBirdVideo()">&times;</span>
+            
+            <div class="video-header bird-header">
+                <h2>Крылатый шаг — парный танец!</h2>
+            </div>
+            
+            <div class="video-instructions">
+                <p><strong>ПРАВИЛА:</strong> Разделитесь на пары, положите руки на плечи друг другу и повторяйте движения за учителем!</p>
+            </div>
+            
+            <div class="video-container">
+                <video id="birdVideo">
+                    <source src="video/bird.mp4" type="video/mp4">
+                    Ваш браузер не поддерживает видео.
+                </video>
+                
+                <div id="birdVideoOverlay" class="video-overlay">
+                    <h3>Готовы танцевать?</h3>
+                    <button class="start-video-btn" onclick="startBirdVideo()">
+                        ▶️ СТАРТ
+                    </button>
+                    <p style="margin-top: 20px; font-size: 0.9em; color: #ccc;">
+                        Нажмите СТАРТ, когда будете готовы в парах
+                    </p>
+                </div>
+            </div>
+            
+            <div class="video-controls">
+                <button class="video-btn bird-btn" onclick="restartBirdVideo()">
+                    🔄 Заново
+                </button>
+                <button class="video-btn secondary" onclick="closeBirdVideo()">
+                    ⏹ Стоп
+                </button>
+            </div>
+            
+            <div class="video-status" id="birdVideoStatus">
+                Ожидание запуска...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== //
+        // ПЕРЕМЕННЫЕ И ЭЛЕМЕНТЫ //
+        // ==================== //
+        const conductorVideoModal = document.getElementById('conductorVideoModal');
+        const sheepVideo = document.getElementById('sheepVideo');
+        const conductorVideoOverlay = document.getElementById('conductorVideoOverlay');
+        const conductorVideoStatus = document.getElementById('conductorVideoStatus');
+        const conductorAudio = document.getElementById('conductorAudio');
+        
+        const birdVideoModal = document.getElementById('birdVideoModal');
+        const birdVideo = document.getElementById('birdVideo');
+        const birdVideoOverlay = document.getElementById('birdVideoOverlay');
+        const birdVideoStatus = document.getElementById('birdVideoStatus');
+        const birdAudio = document.getElementById('birdAudio');
+        
+        let isConductorVideoPlaying = false;
+        let isConductorAudioPlaying = false;
+        let isBirdVideoPlaying = false;
+        let isBirdAudioPlaying = false;
+        
+        // ==================== //
+        // ФУНКЦИИ УПРАВЛЕНИЯ ВИДЕО ДИРИЖЁРА //
+        // ==================== //
+        
+        // Открыть окно с инструкциями
+        function openConductorVideo() {
+            conductorVideoModal.style.display = 'flex';
+            conductorVideoOverlay.style.display = 'flex';
+            sheepVideo.pause();
+            sheepVideo.currentTime = 0;
+            conductorVideoStatus.textContent = 'Ожидание запуска...';
+            isConductorVideoPlaying = false;
+        }
+        
+        // Начать видео
+        function startConductorVideo() {
+            conductorVideoOverlay.style.display = 'none';
+            sheepVideo.play();
+            
+            // Автоматически запускаем музыку, если она еще не играет
+            if (conductorAudio && conductorAudio.paused) {
+                conductorAudio.play();
+            }
+            
+            isConductorVideoPlaying = true;
+            updateConductorVideoStatus('Видео и музыка играют');
+        }
+        
+        // Перезапустить видео
+        function restartConductorVideo() {
+            sheepVideo.currentTime = 0;
+            sheepVideo.play();
+            
+            // Также перезапускаем музыку
+            if (conductorAudio) {
+                conductorAudio.currentTime = 0;
+                conductorAudio.play();
+            }
+            
+            conductorVideoOverlay.style.display = 'none';
+            isConductorVideoPlaying = true;
+            updateConductorVideoStatus('Видео и музыка играют');
+        }
+        
+        // Закрыть видео
+        function closeConductorVideo() {
+            conductorVideoModal.style.display = 'none';
+            sheepVideo.pause();
+            sheepVideo.currentTime = 0;
+            
+            // Останавливаем музыку
+            if (conductorAudio) {
+                conductorAudio.pause();
+                conductorAudio.currentTime = 0;
+            }
+            
+            isConductorVideoPlaying = false;
+            isConductorAudioPlaying = false;
+        }
+        
+        // Обновить статус видео
+        function updateConductorVideoStatus(message) {
+            conductorVideoStatus.textContent = message;
+        }
+        
+        // ==================== //
+        // ФУНКЦИИ УПРАВЛЕНИЯ ВИДЕО КРЫЛАТОГО ШАГА //
+        // ==================== //
+        
+        // Открыть окно с инструкциями
+        function openBirdVideo() {
+            birdVideoModal.style.display = 'flex';
+            birdVideoOverlay.style.display = 'flex';
+            birdVideo.pause();
+            birdVideo.currentTime = 0;
+            birdVideoStatus.textContent = 'Ожидание запуска...';
+            isBirdVideoPlaying = false;
+        }
+        
+        // Начать видео
+        function startBirdVideo() {
+            birdVideoOverlay.style.display = 'none';
+            birdVideo.play();
+            
+            // Автоматически запускаем музыку, если она еще не играет
+            if (birdAudio && birdAudio.paused) {
+                birdAudio.play();
+            }
+            
+            isBirdVideoPlaying = true;
+            updateBirdVideoStatus('Видео и музыка играют');
+        }
+        
+        // Перезапустить видео
+        function restartBirdVideo() {
+            birdVideo.currentTime = 0;
+            birdVideo.play();
+            
+            // Также перезапускаем музыку
+            if (birdAudio) {
+                birdAudio.currentTime = 0;
+                birdAudio.play();
+            }
+            
+            birdVideoOverlay.style.display = 'none';
+            isBirdVideoPlaying = true;
+            updateBirdVideoStatus('Видео и музыка играют');
+        }
+        
+        // Закрыть видео
+        function closeBirdVideo() {
+            birdVideoModal.style.display = 'none';
+            birdVideo.pause();
+            birdVideo.currentTime = 0;
+            
+            // Останавливаем музыку
+            if (birdAudio) {
+                birdAudio.pause();
+                birdAudio.currentTime = 0;
+            }
+            
+            isBirdVideoPlaying = false;
+            isBirdAudioPlaying = false;
+        }
+        
+        // Обновить статус видео
+        function updateBirdVideoStatus(message) {
+            birdVideoStatus.textContent = message;
+        }
+        
+        // ==================== //
+        // СИНХРОНИЗАЦИЯ АУДИО И ВИДЕО ДИРИЖЁРА //
+        // ==================== //
+        
+        // Когда начинается аудио - открываем видео
+        if (conductorAudio) {
+            conductorAudio.addEventListener('play', function() {
+                isConductorAudioPlaying = true;
+                
+                // Если видео окно не открыто - открываем
+                if (conductorVideoModal.style.display !== 'flex') {
+                    openConductorVideo();
+                }
+                
+                // Если видео не играет, но оверлей скрыт - запускаем видео
+                if (!isConductorVideoPlaying && conductorVideoOverlay.style.display === 'none') {
+                    sheepVideo.play();
+                    isConductorVideoPlaying = true;
+                    updateConductorVideoStatus('Видео и музыка играют');
+                }
+                
+                updateConductorVideoStatus('Музыка играет');
+            });
+            
+            // Когда аудио на паузе
+            conductorAudio.addEventListener('pause', function() {
+                isConductorAudioPlaying = false;
+                
+                // Если видео играет - ставим на паузу
+                if (!sheepVideo.paused) {
+                    sheepVideo.pause();
+                    updateConductorVideoStatus('Музыка на паузе');
+                }
+            });
+            
+            // Когда аудио закончилось
+            conductorAudio.addEventListener('ended', function() {
+                isConductorAudioPlaying = false;
+                
+                // Останавливаем видео
+                sheepVideo.pause();
+                isConductorVideoPlaying = false;
+                
+                // Показываем сообщение
+                updateConductorVideoStatus('Упражнение завершено!');
+                
+                // Через 3 секунды закрываем
+                setTimeout(() => {
+                    if (!isConductorAudioPlaying && !isConductorVideoPlaying) {
+                        closeConductorVideo();
+                    }
+                }, 3000);
+            });
+        }
+        
+        // ==================== //
+        // СИНХРОНИЗАЦИЯ АУДИО И ВИДЕО КРЫЛАТОГО ШАГА //
+        // ==================== //
+        
+        // Когда начинается аудио - открываем видео
+        if (birdAudio) {
+            birdAudio.addEventListener('play', function() {
+                isBirdAudioPlaying = true;
+                
+                // Если видео окно не открыто - открываем
+                if (birdVideoModal.style.display !== 'flex') {
+                    openBirdVideo();
+                }
+                
+                // Если видео не играет, но оверлей скрыт - запускаем видео
+                if (!isBirdVideoPlaying && birdVideoOverlay.style.display === 'none') {
+                    birdVideo.play();
+                    isBirdVideoPlaying = true;
+                    updateBirdVideoStatus('Видео и музыка играют');
+                }
+                
+                updateBirdVideoStatus('Музыка играет');
+            });
+            
+            // Когда аудио на паузе
+            birdAudio.addEventListener('pause', function() {
+                isBirdAudioPlaying = false;
+                
+                // Если видео играет - ставим на паузу
+                if (!birdVideo.paused) {
+                    birdVideo.pause();
+                    updateBirdVideoStatus('Музыка на паузе');
+                }
+            });
+            
+            // Когда аудио закончилось
+            birdAudio.addEventListener('ended', function() {
+                isBirdAudioPlaying = false;
+                
+                // Останавливаем видео
+                birdVideo.pause();
+                isBirdVideoPlaying = false;
+                
+                // Показываем сообщение
+                updateBirdVideoStatus('Танец завершён!');
+                
+                // Через 3 секунды закрываем
+                setTimeout(() => {
+                    if (!isBirdAudioPlaying && !isBirdVideoPlaying) {
+                        closeBirdVideo();
+                    }
+                }, 3000);
+            });
+        }
+        
+        // ==================== //
+        // ОБРАБОТЧИКИ ДЛЯ ВИДЕО ДИРИЖЁРА //
+        // ==================== //
+        
+        sheepVideo.addEventListener('play', function() {
+            isConductorVideoPlaying = true;
+            updateConductorVideoStatus('Видео играет');
+        });
+        
+        sheepVideo.addEventListener('pause', function() {
+            isConductorVideoPlaying = false;
+            updateConductorVideoStatus('Видео на паузе');
+        });
+        
+        sheepVideo.addEventListener('ended', function() {
+            // Если музыка еще играет - повторяем видео
+            if (conductorAudio && !conductorAudio.paused) {
+                this.currentTime = 0;
+                this.play();
+                updateConductorVideoStatus('Повтор видео...');
+            } else {
+                isConductorVideoPlaying = false;
+                updateConductorVideoStatus('Видео завершено');
+            }
+        });
+        
+        // ==================== //
+        // ОБРАБОТЧИКИ ДЛЯ ВИДЕО КРЫЛАТОГО ШАГА //
+        // ==================== //
+        
+        birdVideo.addEventListener('play', function() {
+            isBirdVideoPlaying = true;
+            updateBirdVideoStatus('Видео играет');
+        });
+        
+        birdVideo.addEventListener('pause', function() {
+            isBirdVideoPlaying = false;
+            updateBirdVideoStatus('Видео на паузе');
+        });
+        
+        birdVideo.addEventListener('ended', function() {
+            // Если музыка еще играет - повторяем видео
+            if (birdAudio && !birdAudio.paused) {
+                this.currentTime = 0;
+                this.play();
+                updateBirdVideoStatus('Повтор видео...');
+            } else {
+                isBirdVideoPlaying = false;
+                updateBirdVideoStatus('Видео завершено');
+            }
+        });
+        
+        // Закрытие по клавише ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                if (conductorVideoModal.style.display === 'flex') {
+                    closeConductorVideo();
+                }
+                if (birdVideoModal.style.display === 'flex') {
+                    closeBirdVideo();
+                }
+            }
+        });
+        
+        // Автозапуск видео при клике на аудиоплеер в карточке Дирижёра
+        document.addEventListener('click', function(event) {
+            // Если клик на кнопке play аудиоплеера Дирижёра
+            if (event.target.closest('#conductorAudio') || 
+                event.target.closest('.music-card.color-brain audio')) {
+                
+                // Даем время на запуск аудио, затем проверяем
+                setTimeout(() => {
+                    if (conductorAudio && !conductorAudio.paused && 
+                        conductorVideoModal.style.display !== 'flex') {
+                        openConductorVideo();
+                    }
+                }, 100);
+            }
+            
+            // Если клик на кнопке play аудиоплеера Крылатого шага
+            if (event.target.closest('#birdAudio') || 
+                event.target.closest('.music-card.color-bird audio')) {
+                
+                // Даем время на запуск аудио, затем проверяем
+                setTimeout(() => {
+                    if (birdAudio && !birdAudio.paused && 
+                        birdVideoModal.style.display !== 'flex') {
+                        openBirdVideo();
+                    }
+                }, 100);
+            }
+        });
+        
+        // Инициализация при загрузке
+        window.addEventListener('load', function() {
+            console.log('Музыкальная библиотека готова!');
+            console.log('Добавлен новый сектор: "Крылатый шаг"');
+            console.log('Путь к видео птички:', birdVideo.querySelector('source').src);
+        });
+    </script>
+</body>
+</html>

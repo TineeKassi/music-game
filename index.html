@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Музыкальная лаборатория</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8f0f5, #e6f0ff);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(201, 122, 160, 0.15);
+            text-align: center;
+        }
+
+        h1 {
+            color: #c97aa0;
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.3em;
+            margin-bottom: 40px;
+        }
+
+        .modules {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 20px;
+            width: 250px;
+            padding: 30px 20px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .module-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(201, 122, 160, 0.25);
+            border-color: #c97aa0;
+        }
+
+        .module-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .module-title {
+            font-size: 1.8em;
+            color: #b5659e;
+            margin-bottom: 10px;
+        }
+
+        .module-desc {
+            color: #555;
+            line-height: 1.5;
+            font-size: 1em;
+        }
+
+        .quote {
+            margin-top: 50px;
+            padding: 25px;
+            background: #f0d6e8;
+            border-radius: 20px;
+            font-style: italic;
+            color: #555;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        .footer {
+            margin-top: 40px;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        /* Стили для иконок в заголовке */
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <img src="images/laboratory.png" alt="Музыкальная лаборатория" class="header-icon">
+            Музыкальная лаборатория
+            <img src="images/brain.png" alt="Дирижёр" class="header-icon">
+        </h1>
+
+        <div class="modules">
+            <a href="game.html" class="module-card">
+                <img src="images/laboratory.png" alt="Игра" class="module-icon">
+                <div class="module-title">«От эмоции к ритиму!»</div>
+                <div class="module-desc">Интерактивные карточки, нажми на любую или выбери случайную!</div>
+            </a>
+
+            <a href="music.html" class="module-card">
+                <img src="images/library.png" alt="Библиотека" class="module-icon">
+                <div class="module-title">Музыкальная библиотека</div>
+                <div class="module-desc">Подборка отрывков для каждого сектора игры</div>
+            </a>
+
+            <a href="for-teachers.html" class="module-card">
+                <img src="images/teacher.png" alt="Для учителя" class="module-icon">
+                <div class="module-title">Для учителя</div>
+                <div class="module-desc">Цели и задачи музыкально-дидактической игры</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
